@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In</title>
+    <style>
+        /* Add your CSS styles here */
+    </style>
+</head>
+<body>
+    <div class="modal">
+        <h2>Sign in</h2>
+        <div class="form-group">
+            <label for="email">E-mail</label>
+            <input type="email" id="email" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" required>
+        </div>
+        <div class="form-group">
+            <button type="button" onclick="signIn()">Sign In</button>
+        </div>
+        <div class="form-group">
+            <button type="button" onclick="register()">Register</button>
+        </div>
+    </div>
+
+    <script>
+        async function signIn() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            try {
+                const response = await fetch('http://localhost:3000/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    alert('Sign in successful');
+                    // Save the token to local storage or use it as needed
+                    localStorage.setItem('token', data.token);
+                } else {
+                    alert('Sign in failed');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Sign in failed');
+            }
+        }
+
+        async function register() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            try {
+                const response = await fetch('http://localhost:3000/api/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                if (response.ok) {
+                    alert('Registration successful');
+                } else {
+                    alert('Registration failed');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Registration failed');
+            }
+        }
+    </script>
+</body>
+</html>
