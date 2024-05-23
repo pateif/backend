@@ -1,0 +1,77 @@
+const express = require('express');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
+const app = express();
+const port = process.env.PORT || 3000;
+const secretKey = 'your_secret_key'; // Replace with a secure key in production
+
+// Middleware
+app.use(cors());
+app.use(bodyParser.json());
+
+// MongoDB connection
+mongoose.connect('mongodb://localhost:27017/auth-db', { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => console.log('MongoDB connected'))
+    .catch(err => console.log(err));
+
+// User model
+const userSchema = new mongoose.Schema({
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true }
+});
+
+const User = mongoose.model('User', userSchema);
+
+// Routes
+app.post('/api/register', async (req, res) => {
+    const { email, password } = req.body;
+    try {
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const user = new User({ email, password: hashedPassword });
+        await user.save();
+        res.status(201).send('User registered');
+    } catch (error) {
+        res.status(400).send(error.message);
+    }
+});
+
+app.post('/api/login', async (req, res) => {
+    const { email, password } = req.body;
+    try {
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(401).send('Invalid email or password');
+        }
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(401).send('Invalid email or password');
+        }
+        const token = jwt.sign({ userId: user._id }, secretKey, { expiresIn: '1h' });
+        res.status(200).json({ token });
+    } catch (error) {
+        res.status(400).send(error.message);
+    }
+});
+
+app.get('/api/protected', (req, res) => {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) {
+        return res.status(401).send('Access denied');
+    }
+    try {
+        const decoded = jwt.verify(token, secretKey);
+        res.status(200).send('Protected data');
+    } catch (error) {
+        res.status(401).send('Invalid token');
+    }
+});
+
+// Start server
+app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
+});
+js
