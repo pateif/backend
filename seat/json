@@ -1,0 +1,14 @@
+[
+    { "row": 1, "col": 0, "status": "available" },
+    { "row": 1, "col": 1, "status": "available" },
+    { "row": 1, "col": 2, "status": "available" },
+    { "row": 1, "col": 3, "status": "available" },
+    { "row": 1, "col": 4, "status": "available" },
+    { "row": 1, "col": 5, "status": "available" },
+    { "row": 2, "col": 0, "status": "available" },
+    { "row": 2, "col": 1, "status": "available" },
+    { "row": 2, "col": 2, "status": "available" },
+    { "row": 2, "col": 3, "status": "available" },
+    { "row": 2, "col": 4, "status": "available" },
+    { "row": 2, "col": 5, "status": "available" }
+]
