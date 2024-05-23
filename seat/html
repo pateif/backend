@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- ... your previous head content ... -->
+</head>
+<body>
+    <div class="booking-form">
+        <!-- ... your previous form content ... -->
+        <div class="form-group">
+            <button type="button" onclick="submitForm()">Search Flights</button>
+        </div>
+    </div>
+
+    <script>
+        function increment(type) {
+            const input = document.getElementById(type);
+            let value = parseInt(input.value);
+            input.value = value + 1;
+        }
+
+        function decrement(type) {
+            const input = document.getElementById(type);
+            let value = parseInt(input.value);
+            if (value > 1) {
+                input.value = value - 1;
+            }
+        }
+
+        async function submitForm() {
+            const bookingData = {
+                from: document.getElementById('from').value,
+                to: document.getElementById('to').value,
+                depart: document.getElementById('depart').value,
+                return: document.getElementById('return').value,
+                class: document.getElementById('class').value,
+                adult: parseInt(document.getElementById('adult').value),
+                child: parseInt(document.getElementById('child').value),
+                flexibleDepart: document.getElementById('flexible-depart').checked,
+                flexibleReturn: document.getElementById('flexible-return').checked
+            };
+
+            try {
+                const response = await fetch('http://localhost:3000/api/book', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(bookingData)
+                });
+
+                if (response.ok) {
+                    alert('Booking successful!');
+                } else {
+                    alert('Booking failed!');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Booking failed!');
+            }
+        }
+    </script>
+</body>
+</html>
